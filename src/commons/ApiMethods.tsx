@@ -38,7 +38,7 @@ function ApiMethods(url: string) {
 
     setLoading(true);
     axios
-      .post(url, { name: "IONIC", price: 0 }, config)
+      .post(url, { name: "IONIC", price: 10 }, config)
       .then((response) => {
         setData(response.data);
       })
@@ -94,28 +94,6 @@ function ApiMethods(url: string) {
       });
   };
 
-  const deleteMethod = (id: any) => {
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-
-    setLoading(true);
-    axios
-      .delete(`${url}/${id}`, config)
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((err) => {
-        setError(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
   return {
     data,
     loading,
@@ -123,7 +101,6 @@ function ApiMethods(url: string) {
     refetch,
     updateMethod,
     createMethod,
-    deleteMethod,
   };
 }
 

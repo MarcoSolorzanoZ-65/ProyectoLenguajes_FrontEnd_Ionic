@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { IonButton } from "@ionic/react";
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { useHistory } from "react-router-dom";
 
 const EditUser: React.FC = () => {
@@ -17,38 +24,53 @@ const EditUser: React.FC = () => {
     history.push("/pages/Menu");
   };
 
+  const handleBack = () => {
+    history.push("/pages/Menu");
+  };
+
   return (
-    <div>
-      <h2>Edit User</h2>
-      <div>
-        <label htmlFor="fullName">Full Name:</label>
-        <input
-          type="text"
-          id="fullName"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="address">Address:</label>
-        <input
-          type="text"
-          id="address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <IonButton onClick={handleSaveChanges}>Guardar Cambios</IonButton>
-    </div>
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Editar Usuario</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <div>
+          <div>
+            <label htmlFor="fullName">Full Name:</label>
+            <input
+              type="text"
+              id="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="address">Address:</label>
+            <input
+              type="text"
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <IonButton onClick={handleSaveChanges}>Guardar Cambios</IonButton>
+        </div>
+        <div>
+          <IonButton onClick={handleBack}>Volver</IonButton>
+        </div>
+      </IonContent>
+    </IonPage>
   );
 };
 

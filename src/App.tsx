@@ -54,9 +54,6 @@ const App: React.FC = () => {
             <Route path="/pages/editUser" exact={true}>
               <EditUser />
             </Route>
-            {/* <Route path="/pages/Logout" exact={true}>
-              <Logout />
-            </Route> */}
           </IonRouterOutlet>
         </IonSplitPane>
         <Route path="/pages/Login" exact={true}>
