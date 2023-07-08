@@ -49,6 +49,21 @@ const Login: React.FC = () => {
         } else {
           const token = data.token;
           localStorage.setItem("token", token);
+
+          // Get user name from users.json
+          fetch("http://localhost:3000/users.json")
+            .then((response) => response.json())
+            .then((users) => {
+              const user = users.find((user: any) => user.email === email);
+              if (user) {
+                const name = user.email;
+                localStorage.setItem("name", name);
+              }
+            })
+            .catch((error) => {
+              console.log(error.message);
+            });
+
           toast.success("Login successful");
           history.push("/pages/Menu");
         }
@@ -57,13 +72,6 @@ const Login: React.FC = () => {
         console.log(error.message);
       });
   };
-
-  // Check if token exists in localStorage
-  const token = localStorage.getItem("token");
-  if (token) {
-    history.push("/pages/Menu");
-    return null; // Skip rendering the Login component
-  }
 
   return (
     <IonPage

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonButton,
   IonContent,
@@ -8,8 +8,10 @@ import {
   IonToolbar,
   IonInput,
 } from "@ionic/react";
+import axios from "axios";
 import { useHistory } from "react-router-dom";
-import "./EditUser.css";
+import ApiMethods from "../../commons/ApiMethods";
+import { enviroment } from "../../environment/environment.dev";
 
 const EditUser: React.FC = () => {
   const history = useHistory();
@@ -18,9 +20,21 @@ const EditUser: React.FC = () => {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
 
+  const apiMethods = ApiMethods(`${enviroment.apiEndpoint}/users.json`);
+
   const handleSaveChanges = () => {
-    // Perform the necessary actions to save the changes
-    // For example, make an API call to update the user information
+    const userEmail = localStorage.getItem("name");
+
+    if (apiMethods.data) {
+      const user = apiMethods.data.find(
+        (user: any) => user.email === userEmail
+      );
+
+      if (user) {
+        // Update the user's information
+        apiMethods.updateMethod(user.id, fullName, address);
+      }
+    }
 
     // Redirect the user to the desired page
     history.push("/pages/Menu");
@@ -30,90 +44,80 @@ const EditUser: React.FC = () => {
     history.push("/pages/Menu");
   };
 
+  useEffect(() => {
+    const userEmail = localStorage.getItem("name");
+
+    if (apiMethods.data) {
+      const user = apiMethods.data.find(
+        (user: any) => user.email === userEmail
+      );
+
+      if (user) {
+        setFullName(user.full_name);
+        setAddress(user.address);
+      }
+    }
+  }, [apiMethods.data]);
+
   return (
-    <IonPage
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 999,
-      }}
-    >
+    <IonPage>
       <IonHeader>
         <IonToolbar color="success" style={{ padding: "8px" }}>
           <IonTitle style={{ color: "white" }}>Editar Usuario</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen style={{ padding: "20px" }}>
-        <div
-          style={{
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
+        <div style={{ padding: "20px", borderRadius: "10px" }}>
           <div>
             <label htmlFor="fullName">Nombre:</label>
             <IonInput
-              color={"success"}
+              color="success"
               type="text"
               id="fullName"
               value={fullName}
               onIonChange={(e) => setFullName(e.detail.value!)}
-              style={{
-                marginBottom: "10px",
-              }}
+              style={{ marginBottom: "10px" }}
             />
           </div>
           <div>
-            <label htmlFor="address">Direccion:</label>
+            <label htmlFor="address">Dirección:</label>
             <IonInput
-              color={"success"}
+              color="success"
               type="text"
               id="address"
               value={address}
               onIonChange={(e) => setAddress(e.detail.value!)}
-              style={{
-                marginBottom: "10px",
-              }}
+              style={{ marginBottom: "10px" }}
             />
           </div>
           <div>
             <label htmlFor="password">Contraseña:</label>
             <IonInput
-              color={"success"}
+              color="success"
               type="password"
               id="password"
               value={password}
               onIonChange={(e) => setPassword(e.detail.value!)}
-              style={{
-                marginBottom: "10px",
-              }}
+              style={{ marginBottom: "10px" }}
             />
           </div>
           <IonButton
             fill="outline"
-            color={"success"}
+            color="success"
             style={{ marginRight: "10px" }}
             onClick={handleSaveChanges}
           >
-            <div style={{ color: "white" }}>Guardar Cambios</div>
+            Guardar Cambios
           </IonButton>
           <IonButton
             fill="outline"
-            color={"success"}
+            color="success"
             style={{ marginLeft: "10px" }}
             onClick={handleBack}
           >
-            <div style={{ color: "white" }}>Volver</div>
+            Volver
           </IonButton>
         </div>
-        <div></div>
       </IonContent>
     </IonPage>
   );

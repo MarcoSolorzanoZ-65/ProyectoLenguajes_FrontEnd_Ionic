@@ -50,7 +50,7 @@ function ApiMethods(url: string) {
       });
   };
 
-  const updateMethod = (id: any, name: string, price: any) => {
+  const updateMethod = (id: any, name: any, address: any) => {
     const config = {
       headers: {
         Accept: "application/json",
@@ -60,7 +60,7 @@ function ApiMethods(url: string) {
 
     setLoading(true);
     axios
-      .put(`${url}/${id}`, { name: name, price: price }, config)
+      .put(`${url}/${id}`, { full_name: name, address: address }, config)
       .then((response) => {
         setData(response.data);
       })
@@ -73,7 +73,10 @@ function ApiMethods(url: string) {
   };
 
   const createMethod = (cartItems: any[]) => {
+    const orderName = localStorage.getItem("name") || ""; // Retrieve the name from LocalStorage
+
     const order = {
+      order_name: orderName, // Set the order_name to the retrieved name
       order_status: 0,
       order_products_attributes: cartItems.map((item) => ({
         product_id: item.product.id,
