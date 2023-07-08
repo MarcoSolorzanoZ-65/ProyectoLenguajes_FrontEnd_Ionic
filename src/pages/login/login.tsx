@@ -48,8 +48,6 @@ const Login: React.FC = () => {
                     console.log(data.error);
                 } else {
                     const token = data.token;
-                    localStorage.setItem("token", token);
-
                     // Get user data from users.json
                     fetch("http://gsdxvdfazxd.ddns.net:3000/users.json")
                         .then((response) => response.json())
@@ -61,6 +59,7 @@ const Login: React.FC = () => {
                                     const name = user.email;
                                     localStorage.setItem("name", name);
                                     toast.success("Login successful");
+                                    localStorage.setItem("token", token);
                                     history.push("/pages/Menu");
                                 } else {
                                     toast.error("You are not allowed to login.");

@@ -29,7 +29,7 @@ const SignIn: React.FC = () => {
       user: {
         email: email,
         password: password,
-        category_id: 1,
+        category_id: 3,
         name: name,
         address: address,
       },
