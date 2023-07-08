@@ -60,7 +60,7 @@ function ApiMethods(url: string) {
 
     setLoading(true);
     axios
-      .put(`${url}/${id}`, { full_name: name, address: address }, config)
+      .put(`${url}/${id}`, { name: name, address: address }, config)
       .then((response) => {
         setData(response.data);
       })

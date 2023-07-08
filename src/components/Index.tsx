@@ -50,6 +50,7 @@ const Menu: React.FC = () => {
     localStorage.clear();
     sessionStorage.clear();
     history.push("/pages/Login");
+    window.location.reload();
   };
 
   const handleEditUser = () => {

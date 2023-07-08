@@ -1,4 +1,4 @@
-export const enviroment = {
+export const environment = {
   production: false,
-  apiEndpoint: "http://localhost:3000",
+  apiEndpoint: "http://gsdxvdfazxd.ddns.net:3000",
 };

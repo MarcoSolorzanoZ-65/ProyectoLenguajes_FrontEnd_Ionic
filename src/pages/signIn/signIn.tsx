@@ -35,7 +35,7 @@ const SignIn: React.FC = () => {
       },
     };
 
-    fetch("http://localhost:3000/signup", {
+    fetch("http://gsdxvdfazxd.ddns.net:3000/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

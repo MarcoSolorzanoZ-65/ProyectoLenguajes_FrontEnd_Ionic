@@ -19,11 +19,11 @@ import {
 import { useHistory } from "react-router";
 import { cartOutline } from "ionicons/icons";
 import ApiMethods from "../../commons/ApiMethods";
-import { enviroment } from "../../environment/environment.dev";
+import { environment } from "../../environment/environment.dev";
 import "./Menu.css";
 
 const Page: React.FC = () => {
-  const { data } = ApiMethods(`${enviroment.apiEndpoint}/menus`);
+  const { data } = ApiMethods(`${environment.apiEndpoint}/menus`);
   const history = useHistory();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [cartItems, setCartItems] = useState<any[]>([]);

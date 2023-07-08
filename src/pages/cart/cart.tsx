@@ -10,11 +10,11 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import ApiMethods from "../../commons/ApiMethods";
-import { enviroment } from "../../environment/environment.dev";
+import { environment } from "../../environment/environment.dev";
 import "./Cart.css";
 
 const Cart: React.FC = () => {
-  const { createMethod } = ApiMethods(`${enviroment.apiEndpoint}/orders`);
+  const { createMethod } = ApiMethods(`${environment.apiEndpoint}/orders`);
   const history = useHistory();
   const [orderAccepted, setOrderAccepted] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
