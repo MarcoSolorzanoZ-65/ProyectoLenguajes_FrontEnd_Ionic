@@ -14,9 +14,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import {
   archiveOutline,
   archiveSharp,
-  cartOutline,
   fastFoodOutline,
-  logOutOutline,
   personCircleOutline,
 } from "ionicons/icons";
 import "./Index.css";
@@ -41,12 +39,6 @@ const appPages: AppPage[] = [
     iosIcon: personCircleOutline,
     mdIcon: personCircleOutline,
   },
-  {
-    title: "Acceder",
-    url: "/pages/Login",
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp,
-  },
 ];
 
 const Menu: React.FC = () => {
@@ -55,10 +47,8 @@ const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    // Perform logout logic here
-    // Example: Call a logout API, clear user session, etc.
-
-    // Redirect to the login page
+    localStorage.clear();
+    sessionStorage.clear();
     history.push("/pages/Login");
   };
 
@@ -100,17 +90,17 @@ const Menu: React.FC = () => {
             </IonMenuToggle>
           ))}
         </IonList>
+        <IonButton
+          color="danger"
+          expand="full"
+          onClick={() => {
+            handleLogout();
+            toggleMenu();
+          }}
+        >
+          Cerrar Sesion
+        </IonButton>
       </IonContent>
-      <IonButton
-        color="danger"
-        expand="full"
-        onClick={() => {
-          handleLogout();
-          toggleMenu();
-        }}
-      >
-        Cerrar Sesion
-      </IonButton>
     </IonMenu>
   );
 };

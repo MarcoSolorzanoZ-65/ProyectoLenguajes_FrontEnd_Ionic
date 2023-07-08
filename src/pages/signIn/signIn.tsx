@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonContent,
   IonHeader,
@@ -60,9 +60,16 @@ const SignIn: React.FC = () => {
     history.push("/pages/Login");
   };
 
-  const handleLogin = () => { 
+  const handleLogin = () => {
     history.push("/pages/Login");
-  }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      history.push("/pages/Menu");
+    }
+  }, []); // Run the effect only once on component mount
 
   return (
     <IonPage

@@ -36,7 +36,6 @@ const Login: React.FC = () => {
     };
 
     fetch("http://localhost:3000/login.json", {
-      // Specify the JSON format
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,6 +57,13 @@ const Login: React.FC = () => {
         console.log(error.message);
       });
   };
+
+  // Check if token exists in localStorage
+  const token = localStorage.getItem("token");
+  if (token) {
+    history.push("/pages/Menu");
+    return null; // Skip rendering the Login component
+  }
 
   return (
     <IonPage
@@ -93,7 +99,6 @@ const Login: React.FC = () => {
         <div
           className="box"
           style={{
-            // backgroundColor: "white",
             padding: "20px",
             borderRadius: "10px",
           }}

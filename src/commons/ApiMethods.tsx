@@ -74,7 +74,7 @@ function ApiMethods(url: string) {
 
   const createMethod = (cartItems: any[]) => {
     const order = {
-      order_status: 1,
+      order_status: 0,
       order_products_attributes: cartItems.map((item) => ({
         product_id: item.product.id,
         quantity: item.quantity,

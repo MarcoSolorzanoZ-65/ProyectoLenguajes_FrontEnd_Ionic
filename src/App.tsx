@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   IonApp,
   IonRouterOutlet,
@@ -10,7 +11,6 @@ import Index from "./components/Index";
 import Menu from "./pages/menu/menu";
 import Cart from "./pages/cart/cart";
 import EditUser from "./pages/editUser/editUser";
-// import Logout from "./pages/logout/logout";
 import Login from "./pages/login/login";
 import SignIn from "./pages/signIn/signIn";
 
@@ -36,6 +36,15 @@ import "./theme/variables.css";
 setupIonicReact();
 
 const App: React.FC = () => {
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Assuming the token is stored as 'token' in LocalStorage
+    const path = window.location.pathname;
+
+    if (!token && path !== "/pages/Login") {
+      window.location.replace("/pages/Login"); // Redirect to the login page if the token does not exist and the user is not already on the login page
+    }
+  }, []);
+
   return (
     <IonApp>
       <IonReactRouter>
