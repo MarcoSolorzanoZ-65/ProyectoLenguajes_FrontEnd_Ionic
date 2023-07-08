@@ -72,7 +72,15 @@ function ApiMethods(url: string) {
       });
   };
 
-  const createMethod = (name: string, price: number) => {
+  const createMethod = (cartItems: any[]) => {
+    const order = {
+      order_status: 1,
+      order_products_attributes: cartItems.map((item) => ({
+        product_id: item.product.id,
+        quantity: item.quantity,
+      })),
+    };
+
     const config = {
       headers: {
         Accept: "application/json",
@@ -82,7 +90,7 @@ function ApiMethods(url: string) {
 
     setLoading(true);
     axios
-      .post(url, { name: name, price: price }, config)
+      .post(url, { order }, config)
       .then((response) => {
         setData(response.data);
       })

@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonButtons,
   IonContent,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonHeader,
   IonMenuButton,
   IonPage,
@@ -13,30 +10,87 @@ import {
   IonButton,
   IonPopover,
   IonCardContent,
-  IonCardSubtitle,
   IonIcon,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent,
+  IonItem,
+  IonList,
+  IonListHeader,
+  IonSearchbar,
 } from "@ionic/react";
-import { useParams, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import { cartOutline } from "ionicons/icons";
 import ApiMethods from "../../commons/ApiMethods";
 import { enviroment } from "../../environment/environment.dev";
-import { Route, Switch, useLocation } from "react-router-dom";
 import "./Menu.css";
 
 const Page: React.FC = () => {
-  const { data, refetch } = ApiMethods(`${enviroment.apiEndpoint}/menus`);
-  const { name } = useParams<{ name: string }>();
+  const { data } = ApiMethods(`${enviroment.apiEndpoint}/menus`);
   const history = useHistory();
-  const location = useLocation();
-  const [items, setItems] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  useEffect(() => {
+    const storedCartItems = sessionStorage.getItem("cartItems");
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
+
+  const saveCartItems = (items: any[]) => {
+    sessionStorage.setItem("cartItems", JSON.stringify(items));
+    setCartItems(items);
+  };
 
   const redirectToCart = () => {
     history.push("/pages/Cart");
-    window.location.reload(); // Force page reload
+    window.location.reload();
   };
+
+  const addToCart = (product: any) => {
+    const newCartItem = {
+      product,
+      quantity: 1,
+    };
+
+    const existingCartItemIndex = cartItems.findIndex(
+      (item) => item.product.id === product.id
+    );
+
+    if (existingCartItemIndex !== -1) {
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingCartItemIndex].quantity += 1;
+      saveCartItems(updatedCartItems);
+    } else {
+      const updatedCartItems = [...cartItems, newCartItem];
+      saveCartItems(updatedCartItems);
+    }
+
+    console.log("Adding to cart:", product);
+  };
+
+  const handleSearchInputChange = (e: CustomEvent) => {
+    setSearchText(e.detail.value);
+  };
+
+  const handleSearchbarFocus = () => {
+    setIsSearchFocused(true);
+  };
+
+  const handleSearchbarBlur = () => {
+    setIsSearchFocused(false);
+  };
+
+  const isSearchEmpty = searchText.trim() === "";
+  const showFullMenu = !isSearchFocused && isSearchEmpty;
+
+  const filteredData = data?.filter((menu: any) =>
+    menu.products.some(
+      (product: any) =>
+        product.status !== false &&
+        product.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
 
   if (!data) {
     return <h1>Cargando...</h1>;
@@ -44,7 +98,7 @@ const Page: React.FC = () => {
     return (
       <IonPage>
         <IonHeader>
-          <IonToolbar>
+          <IonToolbar color="success" style={{ padding: "8px" }}>
             <IonButtons slot="start">
               <IonMenuButton />
             </IonButtons>
@@ -52,35 +106,98 @@ const Page: React.FC = () => {
               <IonIcon
                 icon={cartOutline}
                 onClick={redirectToCart}
-                style={{ fontSize: "30px", margin: "10px" }}
+                style={{ fontSize: "30px", marginRight: "10px" }}
               />
             </IonButtons>
-            <IonTitle>Nombre del restaurante</IonTitle>
+            <IonTitle style={{ color: "black" }}>Restaurante</IonTitle>
+          </IonToolbar>
+          <IonToolbar>
+            <IonSearchbar
+              value={searchText}
+              onIonChange={handleSearchInputChange}
+              onFocus={handleSearchbarFocus}
+              onBlur={handleSearchbarBlur}
+            ></IonSearchbar>
           </IonToolbar>
         </IonHeader>
-        <IonContent fullscreen>
-          <IonGrid>
-            <IonRow>
-              {data?.map((menu: any) =>
-                menu.products.map((product: any) => (
-                  <IonButton
-                    key={product.id}
-                    onClick={() => setSelectedProduct(product)}
-                    id={`popover-trigger-${product.id}`}
-                  >
-                    <div>
-                      <div>Nombre:</div>
-                      <div>{product.name}</div>
-                    </div>
-                    <div>
-                      <div>Precio:</div>
-                      <div>{product.price}</div>
-                    </div>
-                  </IonButton>
-                ))
-              )}
-            </IonRow>
-          </IonGrid>
+        <IonContent fullscreen style={{ padding: "20px" }}>
+          <IonList style={{ listStyle: "inside", margin: "8px" }}>
+            {showFullMenu &&
+              data?.map((menu: any) => (
+                <React.Fragment key={menu.id}>
+                  <IonListHeader style={{ fontSize: "18px" }}>
+                    {menu.name}
+                  </IonListHeader>
+                  {menu.products.map((product: any) => (
+                    <IonItem
+                      key={product.id}
+                      style={{ display: "flex", marginBottom: "10px" }}
+                    >
+                      <IonItem text-center>
+                        <IonButton
+                          fill="outline"
+                          color="success"
+                          onClick={() => setSelectedProduct(product)}
+                          id={`popover-trigger-${product.id}`}
+                          style={{
+                            height: "60px",
+                            textAlign: "center",
+                            fontSize: "20px",
+                          }}
+                        >
+                          <div style={{ color: "white" }}>
+                            <div>{product.name}</div>
+                            <div>CRC {product.price}</div>
+                          </div>
+                        </IonButton>
+                      </IonItem>
+                    </IonItem>
+                  ))}
+                </React.Fragment>
+              ))}
+            {!showFullMenu &&
+              filteredData?.map((menu: any) => (
+                <React.Fragment key={menu.id}>
+                  <IonListHeader style={{ fontSize: "18px" }}>
+                    {menu.name}
+                  </IonListHeader>
+                  {menu.products
+                    .filter(
+                      (product: any) =>
+                        product.status !== false &&
+                        product.name
+                          .toLowerCase()
+                          .includes(searchText.toLowerCase())
+                    )
+                    .map((product: any) => (
+                      <IonItem
+                        key={product.id}
+                        style={{ display: "flex", marginBottom: "10px" }}
+                      >
+                        <IonItem text-center>
+                          <IonButton
+                            fill="outline"
+                            color="success"
+                            onClick={() => setSelectedProduct(product)}
+                            id={`popover-trigger-${product.id}`}
+                            style={{
+                              height: "60px",
+                              textAlign: "center",
+                              fontSize: "20px",
+                            }}
+                          >
+                            <div style={{ color: "white" }}>
+                              <div>{product.name}</div>
+                              <div>CRC {product.price}</div>
+                            </div>
+                          </IonButton>
+                        </IonItem>
+                      </IonItem>
+                    ))}
+                </React.Fragment>
+              ))}
+          </IonList>
+
           <IonPopover
             isOpen={selectedProduct !== null}
             onDidDismiss={() => setSelectedProduct(null)}
@@ -90,12 +207,31 @@ const Page: React.FC = () => {
                 : undefined
             }
             showBackdrop={true}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              width: "100%",
+              height: "100%",
+              padding: "20px",
+              borderRadius: "100px",
+            }}
           >
             <IonCardContent>
               <div>ID: {selectedProduct?.id}</div>
               <div>Nombre: {selectedProduct?.name}</div>
               <div>Desc: {selectedProduct?.desc}</div>
               <div>Precio: {selectedProduct?.price}</div>
+              <IonButton
+                fill="outline"
+                color="success"
+                style={{ color: "white" }}
+                onClick={() => addToCart(selectedProduct)}
+              >
+                Agregar al carrito
+              </IonButton>
             </IonCardContent>
           </IonPopover>
         </IonContent>
